@@ -49,7 +49,7 @@ function validateCreditCard(creditCardNum) {
         };
     };
     // check that not all digits are the same
-    // not sure if this would work every time
+    // not sure if this would work every time...? Ideas??
     if (sum / 16 === parseInt(creditNumArray[0])) {
         return {
             valid: false,
@@ -67,13 +67,57 @@ function validateCreditCard(creditCardNum) {
 
 // console.log(validateCreditCard("a92332119c011112"));
 
-/**** tests *****/
-console.log(validateCreditCard('9999-7777-8888-0000')); //{ valid: true, number: '9999-7777-8888-0000' }
-console.log(validateCreditCard('6666-6666-6666-1666')); //{ valid: true, number: '6666-6666-6666-1666' }
-console.log(validateCreditCard('a923-3211-9c01-1112')); //{ valid: false,number: 'a923-3211-9c01-1112',error: '_invalid characters_' }
-console.log(validateCreditCard('4444-4444-4444-4444')); //{ valid: false,number: '4444-4444-4444-4444',error: '_only one type of number_' }
-console.log(validateCreditCard('1211-1111-1111-1112')); //{ valid: true, number: '1211-1111-1111-1112' }
+// /**** tests *****/
+// console.log(validateCreditCard('9999-7777-8888-0000')); //{ valid: true, number: '9999-7777-8888-0000' }
+// console.log(validateCreditCard('6666-6666-6666-1666')); //{ valid: true, number: '6666-6666-6666-1666' }
+// console.log(validateCreditCard('a923-3211-9c01-1112')); //{ valid: false,number: 'a923-3211-9c01-1112',error: '_invalid characters_' }
+// console.log(validateCreditCard('4444-4444-4444-4444')); //{ valid: false,number: '4444-4444-4444-4444',error: '_only one type of number_' }
+// console.log(validateCreditCard('1211-1111-1111-1112')); //{ valid: true, number: '1211-1111-1111-1112' }
 
 
+// Bonus 3:
 
+const validateCreditCardLuhnMethod = (creditCardNum) => {
+    const creditNumString = creditCardNum.toString();
+    const creditNumArray = [];
+    for (j = 0; j < creditNumString.length; j++) {
+        if (creditNumString[j] === "-") {
+            continue;
+        };
+        creditNumArray.push(Number(creditNumString[j]));
+    };
+    console.log(creditNumArray); // Helper log
+    let sum = creditNumArray[creditNumArray.length - 1];
+    // console.log(sum); // helper log
+    for (k = creditNumArray.length - 2; k >= 0; k--) {
+        let currentValue = creditNumArray[k];
+        if ((creditNumArray.length - 2 - k) % 2 === 0 ) {
+            currentValue *= 2;
+            if (currentValue > 9) {
+                currentValue -= 9;
+                sum += currentValue;
+            } else {
+                sum += currentValue;
+            };
+        } else {
+            sum += currentValue;
+        };
+        // console.log(sum); // helper log
+    };
+    // console.log(sum); // helper log
+    if (sum % 10 === 0) {
+        return {
+            valid: true,
+            number: creditCardNum
+        };
+    } else {
+        return {
+            valid: false,
+            number: creditCardNum,
+            error: "_fails Luhn algorithm_"
+        };
+    }
+    
+};  
 
+console.log(validateCreditCardLuhnMethod('9999-7777-8888-0000'));
